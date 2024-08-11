@@ -1,15 +1,18 @@
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 
 import Home from "./ui/Home";
+import Error from "./ui/Error";
 import Menu, { loader as menuLoader } from "./features/menu/Menu";
 import Cart from "./features/cart/Cart";
 import CreateOrder from "./features/order/CreateOrder";
-import Order from "./features/order/Order";
+import Order, { loader as orderLoader } from "./features/order/Order";
 import AppLayout from "./ui/AppLayout";
 
 const router = createBrowserRouter([
   {
-    element: <AppLayout />,
+    element: <AppLayout />, // This is the parent component where the <Error /> component is rendered . If we didn't put the
+    // errorElement in any of the child routes then the errorElement will bubble up to the parent component.
+    errorElement: <Error />,
     children: [
       {
         path: "/",
@@ -18,7 +21,8 @@ const router = createBrowserRouter([
       {
         path: "/menu",
         element: <Menu />,
-        loader: menuLoader, // We are providing the menuLoader to the <Menu /> component here
+        loader: menuLoader, // We are providing the menuLoader to the <Menu /> component here.
+        errorElement: <Error />,
       },
       {
         path: "/cart",
@@ -31,6 +35,8 @@ const router = createBrowserRouter([
       {
         path: "/order/:orderId",
         element: <Order />,
+        loader: orderLoader,
+        errorElement: <Error />,
       },
     ],
   },
