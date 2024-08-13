@@ -8,6 +8,7 @@ import {
 } from "react-router-dom";
 import { createOrder } from "../../services/apiRestaurant";
 import Button from "../../ui/Button";
+import { useSelector } from "react-redux";
 
 // https://uibakery.io/regex-library/phone-number
 const isValidPhone = (str) =>
@@ -40,6 +41,9 @@ const fakeCart = [
 ];
 
 function CreateOrder() {
+  const username = useSelector((state) => state.user.username); // Here we are reading the username from the
+  // redux store ( which is stored in the redux store) .
+
   const navigation = useNavigation(); // This useNavigation() custom hook provided by the react-router-dom returns
   // 3 states which are idle , loading and submitting.
   const isSubmitting = navigation.state === "submitting";
@@ -63,7 +67,16 @@ function CreateOrder() {
         {/* Form is given by react-router-dom  no need to write /order/new in the action because it matches to the closest route by default*/}
         <div className="mb-5 flex flex-col gap-2 sm:flex-row sm:items-center">
           <label className="sm:basis-40">First Name</label>
-          <input className="input grow" type="text" name="customer" required />
+          <input
+            className="input grow"
+            type="text"
+            name="customer"
+            defaultValue={username}
+            // The above defaultValue is very important one which basically allows us to set a default value at
+            // the beginning . But then we can still change and this is now not a controlled element.This is a
+            // normal HTML element which will have a default value
+            required
+          />
         </div>
 
         <div className="mb-5 flex flex-col gap-2 sm:flex-row sm:items-center">
