@@ -6,7 +6,7 @@ function Menu() {
   const menu = useLoaderData(); // This is the custom hook provided by the react-router-dom , So it automatically loads the data from the
   // loader which we provided in the "/menu" route
   return (
-    <ul>
+    <ul className="divide-y divide-stone-200 px-2">
       {menu.map((pizza) => (
         <MenuItem pizza={pizza} key={pizza.id} />
       ))}

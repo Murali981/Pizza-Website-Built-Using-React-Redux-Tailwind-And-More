@@ -9,15 +9,16 @@ function AppLayout() {
   // we have placed the isLoading indicator in the AppLayout.jsx file . So this will render our loader each time when somewhere in the app
   // something is loading
   return (
-    <div className="layout">
+    <div className="grid h-screen grid-rows-[auto_1fr_auto] ">
       {isLoading && <Loader />}
 
       <Header />
 
-      <main>
-        <Outlet />
-      </main>
-
+      <div className="overflow-scroll">
+        <main className="mx-auto max-w-3xl">
+          <Outlet />
+        </main>
+      </div>
       <CartOverview />
     </div>
   );
