@@ -24,7 +24,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   // For using redux here , We are storing the initial state in the username as an empty string ""
-  username: "Nishaank",
+  username: "",
 };
 
 const userSlice = createSlice({
@@ -47,3 +47,5 @@ export const { updateName } = userSlice.actions; // We are exporting our reducer
 // Inside the userSlice.actions we will get access to the action creators. Here updateName is an action creator.
 
 export default userSlice.reducer; // We will use this reducer to setup our store.
+
+export const getUser = (state) => state.user.username;
