@@ -9,6 +9,7 @@ import CreateOrder, {
 } from "./features/order/CreateOrder";
 import Order, { loader as orderLoader } from "./features/order/Order";
 import AppLayout from "./ui/AppLayout";
+import { action as updateOrderAction } from "./features/order/UpdateOrder";
 
 const router = createBrowserRouter([
   {
@@ -40,6 +41,10 @@ const router = createBrowserRouter([
         element: <Order />,
         loader: orderLoader,
         errorElement: <Error />,
+        action: updateOrderAction, // Here we have connected our action which is in the updateOrder.jsx page to the route "/order/:orderId"
+        // The above updateOrderAction is going to work just fine even though the form that we want to connect with this action is not really
+        // on this page <Order /> but the child component of the <Order /> page which is <UpdateOrder /> where this action "updateOrderAction"
+        // is actually present. Here React-Router is smart enough to find it out okay.
       },
     ],
   },

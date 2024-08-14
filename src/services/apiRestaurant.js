@@ -39,7 +39,10 @@ export async function createOrder(newOrder) {
 export async function updateOrder(id, updateObj) {
   try {
     const res = await fetch(`${API_URL}/order/${id}`, {
-      method: "PATCH",
+      method: "PATCH", // As you can see this is a "PATCH" request which is one of the two ways of updating the data. So there is a
+      // "PUT" request where we need to pass in the entire new updated object and then there is a "PATCH" which will only take in the data
+      // that has actually changed and add that to the original object on the server. To this updateOrder API function we have to pass
+      // the id of the order that should be updated and the updateObj which we will send only the data that should be updated.
       body: JSON.stringify(updateObj),
       headers: {
         "Content-Type": "application/json",
