@@ -9,6 +9,10 @@ import {
 import { createOrder } from "../../services/apiRestaurant";
 import Button from "../../ui/Button";
 import { useSelector } from "react-redux";
+import { clearCart, getCart, getTotalCartPrice } from "../cart/cartSlice";
+import EmptyCart from "../cart/EmptyCart";
+import store from "../../store";
+import { formatCurrency } from "../../utils/helpers";
 
 // https://uibakery.io/regex-library/phone-number
 const isValidPhone = (str) =>
@@ -41,13 +45,16 @@ const fakeCart = [
 ];
 
 function CreateOrder() {
+  const [withPriority, setWithPriority] = useState(false); // Whenever we click on the checkbox to enable the priority for
+  //  an order then a UI change should happen with respect to the checkbox click and also after the priority checkbox
+  // is clicked an extra priority price should be added to the total pizzas price. So here we need a state variable
+  // to update the state of the priority because it should react according to the priority price.
   const username = useSelector((state) => state.user.username); // Here we are reading the username from the
   // redux store ( which is stored in the redux store) .
 
   const navigation = useNavigation(); // This useNavigation() custom hook provided by the react-router-dom returns
   // 3 states which are idle , loading and submitting.
   const isSubmitting = navigation.state === "submitting";
-  // const [withPriority, setWithPriority] = useState(false);
 
   const formErrors = useActionData(); // This useActionData() custom hook is also provided by the react-router-dom . The
   // most common use case of this custom hook is handling the form errors occured while submitting the form. It will help us
@@ -56,7 +63,21 @@ function CreateOrder() {
     console.log(formErrors);
   }
 
-  const cart = fakeCart;
+  // const cart = fakeCart;
+
+  const cart = useSelector(getCart); // We should not call this selector functions by putting getCart() but the redux
+  // will be responsible to call the getCart selector function
+  console.log(cart);
+
+  const totalCartPrice = useSelector(getTotalCartPrice);
+
+  const priorityPrice = withPriority ? totalCartPrice * 0.2 : 0;
+
+  const totalPrice = totalCartPrice + priorityPrice;
+
+  if (!cart.length) {
+    return <EmptyCart />;
+  }
 
   return (
     <div className="px-4 py-6">
@@ -110,8 +131,8 @@ function CreateOrder() {
             type="checkbox"
             name="priority"
             id="priority"
-            // value={withPriority}
-            // onChange={(e) => setWithPriority(e.target.checked)}
+            value={withPriority}
+            onChange={(e) => setWithPriority(e.target.checked)} // Here we are making the checkbox also a controlled element.
           />
           <label htmlFor="priority" className="font-medium">
             Want to yo give your order priority?
@@ -121,7 +142,9 @@ function CreateOrder() {
         <div>
           <input type="hidden" name="cart" value={JSON.stringify(cart)} />
           <Button disabled={isSubmitting} type="primary">
-            {isSubmitting ? "Placing order..." : "Order now"}
+            {isSubmitting
+              ? "Placing order..."
+              : `Order now for ${formatCurrency(totalPrice)}`}
           </Button>
         </div>
       </Form>
@@ -142,7 +165,7 @@ export async function action({ request }) {
   const order = {
     ...data,
     cart: JSON.parse(data.cart),
-    priority: data.priority === "on",
+    priority: data.priority === "true",
   };
 
   console.log(order);
@@ -158,15 +181,16 @@ export async function action({ request }) {
   }
 
   // If everything is okay then create a new order and redirect
-  // const newOrder = await createOrder(order); // createOrder is an API function which is in apiRestaurant.js file where we will pass our above created  "order"
-  // // object as an argument
+  const newOrder = await createOrder(order); // createOrder is an API function which is in apiRestaurant.js file where we will pass our
+  // above created  "order" object as an argument
 
-  // return redirect(`/order/${newOrder.id}`); // we can't create a url as "/order/:orderId" by the  useNavigate() which is a custom
-  // // hook provided by the react-router-dom because we can't use custom hooks inside functions as we can only use the custom hooks inside
-  // // component only . So to solve this problem react-router-dom provided us with a solution which is "redirect" inbuilt provided by the
-  // // react-router-dom which will return a redirect URL as soon as we submit the newly created newOrder object.
+  store.dispatch(clearCart()); // Don't overuse this technique as it may deactivates a couple of performance optimizations of redux
+  // on this page.
 
-  return null;
+  return redirect(`/order/${newOrder.id}`); // we can't create a url as "/order/:orderId" by the  useNavigate() which is a custom
+  // hook provided by the react-router-dom because we can't use custom hooks inside functions as we can only use the custom hooks inside
+  // component only . So to solve this problem react-router-dom provided us with a solution which is "redirect" inbuilt provided by the
+  // react-router-dom which will return a redirect URL as soon as we submit the newly created newOrder object.
 }
 
 export default CreateOrder;
