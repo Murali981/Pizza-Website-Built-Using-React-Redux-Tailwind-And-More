@@ -55,7 +55,7 @@ export const getCart = (state) => state.cart.cart; // We are getting this cart f
 export const getTotalCartQuantity = (state) =>
   state.cart.cart.reduce((sum, item) => sum + item.quantity, 0); // This is a redux selector function where the standard is that
 // these selector functions will start with keyword "get" and we will have them in a central place which is cartSlice.js file. Because we
-// will later on need this selector function in another component and then all we need to do is take this selector function and reuse it.
+// will later  need this selector function in another component and then all we need to do is take this selector function and reuse it.
 
 export const getTotalCartPrice = (state) =>
   state.cart.cart.reduce((sum, item) => sum + item.totalPrice, 0);
