@@ -7,7 +7,7 @@ function UpdateOrder({ order }) {
   return (
     <fetcher.Form method="PATCH" className="text-right">
       {/* PATCH method because we are updating the order */}
-      {/* fetcher.Form is also similar to normal <Form> element which is given by react-router-dom but the difference is  submitting a 
+      {/* fetcher.Form is also similar to normal <Form> element which is given by react-router-dom but the difference is  submitting  
        in the normal <Form>  will create a new navigation which is to navigate away from the page but <fetcher.Form>  will not navigate
         away . It will simply submit a form  and also revalidate the page  */}
       <Button type="primary">Make priority</Button>
